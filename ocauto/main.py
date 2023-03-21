@@ -84,7 +84,7 @@ def generate_report_from_script(script: str, param: str=None):
     )
     conn = pyodbc.connect(
         "DRIVER={%s}; SERVER=%s; DATABASE=%s; UID=%s; PWD=%s;" 
-            % ("ODBC Driver 17 for SQL Server", "172.16.0.109", "PRD", "dba", "misdbadmin01"),
+            % ("ODBC Driver 17 for SQL Server", "<SERVERNAME>", "<DATABASE>", "<UID>", "<PASSWORD>"),
         autocommit=False
     )
 
