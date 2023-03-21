@@ -73,4 +73,4 @@ SELECT * FROM dbo.Balances
 
 Now save your script to folder `scripts` and name it `balances.sql`
 
-> **Note:** The name of the directory mapping and the name of the script file should be the same (always), just like what we did from the above examples. And that is because each time you add a new location/directory mapping, the program will look for any script file that matches the name of the mapping you created.
+> **Note:** The name (key) of the mapping and the name of the script file should be the same (always), just like what we did from the above examples. And that is because each time you add a new mapping, the program will look for any file that matches the name of the mapping you created.
