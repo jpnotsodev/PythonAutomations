@@ -55,7 +55,7 @@ oc_dirs_mapping = dict()
 oc_dirs_mapping[<report_name>] = "<ownCloud_target_path>"
 ```
 
-### Sample:
+#### Sample:
 
 ```python
 oc_dirs_mapping["balances"] = "Reports\\Balances\\"
@@ -63,7 +63,7 @@ oc_dirs_mapping["balances"] = "Reports\\Balances\\"
 
 ### Step 2: Create the script (SQL) file you will be using to extract the data needed for your new report, and save it inside the `scripts` folder
 
-### Sample SQL script:
+#### Sample SQL script:
 
 ```sql
 SELECT * FROM dbo.Balances
