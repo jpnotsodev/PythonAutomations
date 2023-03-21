@@ -45,7 +45,7 @@ To add a report, you must first specify the location (in ownCloud) where the rep
 
 To do that, you must do some modification(s) to the `main.py` file.
 
-#### Step 1: Add mappings for the ownCLoud target report location
+### Step 1: Add mappings for the ownCLoud target report location
 
 ```python
 oc_dirs_mapping = dict()
@@ -55,18 +55,22 @@ oc_dirs_mapping = dict()
 oc_dirs_mapping[<report_name>] = "<ownCloud_target_path>"
 ```
 
-#### Sample:
+### Sample:
 
 ```python
 oc_dirs_mapping["balances"] = "Reports\\Balances\\"
 ```
 
-#### Step 2: Create the script (SQL) file you will be using to extract the data needed for your new report, and save it inside the `scripts` folder
+### Step 2: Create the script (SQL) file you will be using to extract the data needed for your new report, and save it inside the `scripts` folder
 
-#### Sample SQL script:
+### Sample SQL script:
 
 ```sql
 SELECT * FROM dbo.Balances
 ```
 
-> _Note:_ You can pass parameter to a script by placing a `= ?` placeholder, instead of the actual value.
+> **Note:** You can pass parameter to a script by placing a `= ?` placeholder, instead of the actual value.
+
+Now save your script to folder `scripts` and name it `balances.sql`
+
+> **Note:** The name of the directory mapping and the name of the script file should be the same (always), just like what we did from the above examples. And that is because each time you add a new location/directory mapping, the program will look for any script file that matches the name of the mapping you created.
