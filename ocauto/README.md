@@ -5,8 +5,8 @@
 A python program that is written for the sole purpose of automating the process of:
 
 - Extraction of data from the database
-- Exporting that data to excel, and finally;
-- Copy those files to the ownCloud remote location.
+- Creating spreadsheets
+- Making a copy of the report files into ownCloud remote client
 
 All this in just a single run of a program.
 
