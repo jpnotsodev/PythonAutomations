@@ -19,7 +19,7 @@ All this in just a single run of a program.
 
 ## Setting up your program
 
-### Step 1: Clone the repository
+### Step 1: Clone the repository (You can skip this part if you already had a copy onto your local system)
 
 ```bash
 >> cd <to your preferred target location>
