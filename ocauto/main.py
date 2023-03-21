@@ -1,37 +1,31 @@
 import owncloud
+import pyodbc
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.styles import Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
-import pyodbc
-from collections.abc import MutableMapping
 
 import os
+import re
 import datetime
 import time
 import shutil
 from pathlib import Path
-from enum import Enum
-import logging
 
-logging.basicConfig(level = logging.DEBUG)
-logger = logging.getLogger()
-
-class BaseException(Exception):
-    pass
-
-class InvalidFileExtensionError(BaseException):
-    pass
+from utils.logger import logger
+from exceptions.exceptions import ScriptNotFoundError
+from exceptions.exceptions import InvalidFileExtensionError
+from exceptions.exceptions import TooManyParametersError
 
 SCRIPTS_DIR = "scripts"
 LOCAL_ROOT_DIR = "DataCenter"
+OC_ROOT_DIR = "C:\\Users\\john.delmundo\\ownCloud - john.delmundo@data.cebookshop.com\\DataCenter"
 
 # Container for ownCloud directory mapping(s)
 oc_dirs_mapping = dict()
 
 # Mappings
-oc_dirs_mapping["root"] = "C:\\Users\\john.delmundo\\ownCloud - john.delmundo@data.cebookshop.com\\DataCenter"
 oc_dirs_mapping["sales_ce"] = "Sales\\5 Year Sales\\CE"
 oc_dirs_mapping["sales_cl"] = "Sales\\5 Year Sales\\CELogic"
 oc_dirs_mapping["gr"] = "Purchases\\Receipts\\5 Years GR Data"
@@ -46,7 +40,6 @@ oc_dirs_mapping["inventory_monthly"] = "Inventory\\Monthly Invty"
 local_dirs_mapping = dict()
 
 # Mappings
-local_dirs_mapping["root"] = "DataCenter"
 local_dirs_mapping["sales_ce"] = "Sales\\5 Year Sales\\CE"
 local_dirs_mapping["sales_cl"] = "Sales\\5 Year Sales\\CELogic"
 local_dirs_mapping["gr"] = "Purchases\\Receipts\\5 Years GR Data"
@@ -58,17 +51,24 @@ local_dirs_mapping["inventory_asof"] = "Inventory\\"
 local_dirs_mapping["inventory_monthly"] = "Inventory\\Monthly Invty"
 
 # Normalizes the root paths
-if not oc_dirs_mapping["root"].endswith("\\"):
-    oc_dirs_mapping["root"] += "\\"
+if not OC_ROOT_DIR.endswith("\\"):
+    OC_ROOT_DIR += "\\"
 
 if not LOCAL_ROOT_DIR.endswith("\\"):
-    local_dirs_mapping["root"] += "\\"
+    LOCAL_ROOT_DIR += "\\"
 
 # Creates a directory called 'scripts' (if it doesn't exists already) within 
 # your project directory. This is the location where you are going to put all
 # your sql script(s) that will later be used by this program for generating custom reports
+
 if not Path(SCRIPTS_DIR).is_dir():
+    logger.info("Creating {} directory..."
+        .format(SCRIPTS_DIR + "\\")
+    )
     Path(SCRIPTS_DIR).mkdir()
+    logger.info("{} directory created successfully..."
+        .format(SCRIPTS_DIR + "\\")
+    )
 
 def generate_report_from_script(script: str, param: str=None):
     """This function generates a structured data (list) from a given
@@ -77,6 +77,11 @@ def generate_report_from_script(script: str, param: str=None):
     """
 
     # Builds a pyodbc connection object
+    logger.info("Connecting to '{database}', under instance name '{servername}'..."
+        .format(database="PRD",
+            servername="172.16.0.109"
+        )
+    )
     conn = pyodbc.connect(
         "DRIVER={%s}; SERVER=%s; DATABASE=%s; UID=%s; PWD=%s;" 
             % ("ODBC Driver 17 for SQL Server", "172.16.0.109", "PRD", "dba", "misdbadmin01"),
@@ -93,15 +98,21 @@ def generate_report_from_script(script: str, param: str=None):
         result = cursor.execute(script)
 
     # Get column names
+    logger.info("Extracting table columns...")
     col_names = [c[0] for c in result.description]
+    logger.info("Done...")
 
     # Get row data
+    logger.info("Extracting table rows...")
     rows = [list(row) for row in result]
+    logger.info("Done...")
 
     # Merge column name(s) with row data
+    logger.info("Sanitizing report data...")
     data = list([col_names])
     for row in rows:
         data.append(row)
+    logger.info("Done...")
 
     return data
 
@@ -120,10 +131,12 @@ def to_spreadsheet(data: list[list|tuple]|tuple[list|tuple], local_path: str, fi
     """
 
     # Verifies if the provided file extension is a valid spreadsheet extention.
+    logger.info("Validating provided file extension...")
     allowed_extensions = ["xls", "xlsx"]
     if extension not in allowed_extensions:
-        raise InvalidFileExtensionError("'%s' is an invalid spreadsheet extension." % extension)
+        raise InvalidFileExtensionError("Valid file extensions are (xls, xlsx), used '{}' instead.".format(extension))
 
+    logger.info("Creating new workbook...")
     wb = Workbook()
     ws = wb.active
     ws.title = "Sheet"
@@ -132,6 +145,7 @@ def to_spreadsheet(data: list[list|tuple]|tuple[list|tuple], local_path: str, fi
         ws.append(row)
 
     # Apply custom cell formatting/styling 
+    logger.info("Applying styles...")
     for row in ws.iter_rows(max_row=1):
         for cell in row:
             cell.font = Font(
@@ -159,7 +173,8 @@ def to_spreadsheet(data: list[list|tuple]|tuple[list|tuple], local_path: str, fi
                 cell.fill = PatternFill(
                     fill_type="solid",
                     fgColor="00FFFFFF"
-                )
+                )  
+    logger.info("Done...")
 
     # Freeze column headers
     ws.freeze_panes = ws["A2"]
@@ -181,7 +196,13 @@ def to_spreadsheet(data: list[list|tuple]|tuple[list|tuple], local_path: str, fi
     filename = local_path + "/" + filename + extension
 
     try:
+        logger.info("Saving file '{}' to '{}'..."
+            .format(os.path.basename(filename),
+                os.path.dirname(filename)
+            )
+        )
         wb.save(filename)
+        logger.info("Done...")
     except Exception as exc:
         raise exc
 
@@ -217,8 +238,8 @@ def _get_formatted_date():
     return res
 
 def main():
-    root = local_dirs_mapping["root"]
-    if not os.path.isdir(root):
+    root = LOCAL_ROOT_DIR
+    if not os.path.exists(root):
         os.mkdir(root)
 
     for _, path in local_dirs_mapping.items():
@@ -232,7 +253,7 @@ def main():
                 except:
                     pass
 
-    scripts_path = Path(Sc)
+    scripts_path = Path(SCRIPTS_DIR)
     for path in scripts_path.iterdir():
         if path.is_dir():
             raise Exception("Scripts folder must contain script files only.")
@@ -241,12 +262,21 @@ def main():
 
     for k in oc_dirs_mapping:
         if k.lower() not in script_files and k != "root":
-            raise FileNotFoundError("Script for key/mapping '%s' not found." % (k))
+            raise ScriptNotFoundError("Script for key/mapping '%s' not found." % (k))
         if k != "root":
             try:
                 file_handle = open("%s\%s" % (SCRIPTS_DIR, k + ".sql"))
                 script = file_handle.read()
-                if "= ?" in script:
+                if re.search("= +\?", script):
+                    param_count = len(re.findall("= +\?", script))
+                    if param_count > 1:
+                        raise TooManyParametersError("The function only supports %s parameter at a time, but '%s' has %s."
+                            % (
+                                1,
+                                os.path.join(SCRIPTS_DIR, k + ".sql"),
+                                param_count
+                            )
+                        )
                     data = generate_report_from_script(script, _get_formatted_date())
                 else:
                     data = generate_report_from_script(script)
@@ -256,10 +286,17 @@ def main():
                     filename=k.upper(),
                     extension="xlsx"
                 )
-                copy_local_file_to_oc(
-                    destination_file_path=oc_dirs_mapping["root"] + oc_dirs_mapping[k], 
-                    source_file_path=spreadsheet
+                logger.info("Copying '{}' from '{}' to '{}'..."
+                    .format(os.path.basename(spreadsheet),
+                        os.path.dirname(spreadsheet),
+                        os.path.dirname(OC_ROOT_DIR + oc_dirs_mapping[k])
+                    )
                 )
+                # copy_local_file_to_oc(
+                #     destination_file_path=oc_dirs_mapping["root"] + oc_dirs_mapping[k], 
+                #     source_file_path=spreadsheet
+                # )
+                logger.info("Done...")
             except Exception as exc:
                 raise exc
             finally:
