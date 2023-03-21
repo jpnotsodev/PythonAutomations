@@ -1,0 +1,12 @@
+certifi==2022.12.7
+charset-normalizer==3.1.0
+colorama==0.4.6
+et-xmlfile==1.1.0
+idna==3.4
+openpyxl==3.1.1
+pyocclient==0.6
+pyodbc==4.0.35
+requests==2.28.2
+six==1.16.0
+tqdm==4.65.0
+urllib3==1.26.14
