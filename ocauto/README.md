@@ -10,7 +10,7 @@ A python program that is written for the sole purpose of automating the process 
 
 All this in just a single run of a program.
 
-#### Pre-requisites
+### Pre-requisites
 
 - ownCloud Desktop App/Client ([_download here_](https://owncloud.com/desktop-app/))
 - Latest version of python ([_download here_](https://www.python.org/))
@@ -19,21 +19,21 @@ All this in just a single run of a program.
 
 ## Setting up your program
 
-#### Step 1: Clone the repository
+### Step 1: Clone the repository
 
 ```bash
 >> cd <to your preferred target location>
 >> git clone 'https://github.com/jpdelmundo223/PythonAutomations.git'
 ```
 
-#### Step 2: Activate virtual environment
+### Step 2: Activate virtual environment
 
 ```bash
 >> cd PythonAutomations\ocauto
 >> venv\Scripts\active
 ```
 
-#### Step 3: Install required packages
+### Step 3: Install required packages
 
 ```bash
 >> pip install -r requirements.txt
