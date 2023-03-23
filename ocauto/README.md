@@ -20,6 +20,7 @@ All this in just a single run of a program.
 - [Adding new report](#adding-new-report)
   - [Add ownCloud directory mapping](#add-owncloud-directory-mapping)
   - [Create the required sql script that will generate the report for your new directory mapping](#create-the-required-sql-script-that-will-generate-the-report-for-your-new-directory-mapping)
+  - [Run the program](#run-the-program)
 - [Running tests](#running-tests)
 - [Limitations](#limitations)
 
@@ -34,21 +35,21 @@ All this in just a single run of a program.
 
 ### Setting up your program
 
-#### Step 1: Clone the repository <small> (You can skip this part if you already have a copy of this to your local system) </small>
+#### Clone the repository <small> (You can skip this part if you already have a copy of this to your local system) </small>
 
 ```bash
 > cd <to your preferred target location>
 > git clone 'https://github.com/jpdelmundo223/PythonAutomations.git'
 ```
 
-#### Step 2: Activate virtual environment
+#### Activate virtual environment
 
 ```bash
 > cd PythonAutomations\ocauto
 > venv\Scripts\active
 ```
 
-#### Step 3: Install required packages
+#### Install required packages
 
 ```bash
 > pip install -r requirements.txt
@@ -60,7 +61,7 @@ To add a report, you must first specify the location (identical to what your own
 
 You can do all that by going to `config.py`:
 
-#### Step 1: Add ownCloud directory mapping
+#### Add ownCloud directory mapping
 
 ```python
 dirs = {
@@ -77,7 +78,7 @@ dirs = {
 "BALANCES": Path(r"DataCenter\Balances")
 ```
 
-#### Step 2: Create the required sql script that will generate the report for your new directory mapping
+#### Create the required sql script that will generate the report for your new directory mapping
 
 #### Sample SQL script:
 
@@ -92,13 +93,19 @@ Now, save it to folder `scripts\` and name it as `balances.sql`
 
 > **Note:** Your mapper name and the name of the script file must be of the same name (just like what we did in previous examples). That is because each time you add a new directory mapping, the program will look for any file (inside `scripts\` folder) that matches the name of the mapping you've just created. Failing to do so will cause the program to stop/terminate.
 
+#### Run the program
+
+```bash
+> python ocauto\main.py
+```
+
 ### Running tests
 
 Running test cases are important as it will ensure you that the program would work as intended.
 
 You can run tests by running the ff. code against your command line interface:
 
-```cmd
+```bash
 > python tests\tests.py
 ```
 
