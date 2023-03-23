@@ -6,7 +6,7 @@ class ConfigException(BaseException):
 class MissingConfigError(ConfigException):
     pass
 
-# A dictionary object, which contains mapping 
+# Mapping configuration for ownCloud
 dirs = {
     "LOCAL_ROOT_DIR": Path(r"DataCenter"),
     "OC_ROOT_DIR": Path(r"C:\Users\john.delmundo\ownCloud - john.delmundo@data.cebookshop.com\DataCenter"),
@@ -20,12 +20,12 @@ dirs = {
         "MATLIST_CL": Path(r"Material List"),
         "INVENTORY_ASOF": Path(r"Inventory"),
         "INVENTORY_MONTHLY": Path(r"Inventory\Monthly Invty"),
-        # Add new report path mapping below
+        # Add new mapping below
     },
     "SCRIPTS_DIR": Path(r"scripts"),
 }
 
-# A dictionary object for database configuration
+# Database configuration
 database = {
     "DRIVER": "ODBC Driver 17 for SQL Server",
     "SERVER": "172.16.0.109",
