@@ -1,7 +1,5 @@
 # OwnCloud Report Automation
 
-### Description
-
 A python program that is written for the sole purpose of automating the process of:
 
 - Extraction of data from the database
@@ -10,6 +8,23 @@ A python program that is written for the sole purpose of automating the process 
 
 All this in just a single run of a program.
 
+---
+
+### Table of Contents
+
+- [Pre-requisites](#pre-requisites)
+- [Setting up your program](#setting-up-your-program)
+  - [Clone the repository](#clone-the-repository)
+  - [Activate virtual environment](#activate-virtual-environment)
+  - [Install required packages](#install-required-packages)
+- [Adding new report](#adding-new-report)
+  - [Add ownCloud directory mapping](#add-owncloud-directory-mapping)
+  - [Create the required sql script that will generate the report for your new directory mapping](#create-the-required-sql-script-that-will-generate-the-report-for-your-new-directory-mapping)
+- [Running tests](#running-tests)
+- [Limitations](#limitations)
+
+---
+
 ### Pre-requisites
 
 - ownCloud Desktop App/Client ([_download here_](https://owncloud.com/desktop-app/))
@@ -17,60 +32,74 @@ All this in just a single run of a program.
 
 > **Note:** In order for this program to actually work, you must install/setup your ownCloud Desktop App first. Make sure that you are already logged in using authorized credentials.
 
-## Setting up your program
+### Setting up your program
 
-### Step 1: Clone the repository <small> (You can skip this part if you already have a copy of this to your local system) </small>
-
-```bash
->> cd <to your preferred target location>
->> git clone 'https://github.com/jpdelmundo223/PythonAutomations.git'
-```
-
-### Step 2: Activate virtual environment
+#### Step 1: Clone the repository <small> (You can skip this part if you already have a copy of this to your local system) </small>
 
 ```bash
->> cd PythonAutomations\ocauto
->> venv\Scripts\active
+> cd <to your preferred target location>
+> git clone 'https://github.com/jpdelmundo223/PythonAutomations.git'
 ```
 
-### Step 3: Install required packages
+#### Step 2: Activate virtual environment
 
 ```bash
->> pip install -r requirements.txt
+> cd PythonAutomations\ocauto
+> venv\Scripts\active
 ```
 
-## Adding new custom report
+#### Step 3: Install required packages
 
-To add a report, you must first specify the location (in ownCloud) where the report file will be stored at, create a script that will be responsible for fetching data from your database and save it inside the `scripts` folder.
+```bash
+> pip install -r requirements.txt
+```
 
-To do that, you must do some modification(s) to the `main.py` file.
+### Adding new report
 
-### Step 1: Add mappings for the ownCLoud target report location
+To add a report, you must first specify the location (identical to what your ownCloud remote client has e.g. `DataCenter\Balances`) where the report file will be stored at, create a script that will be responsible for fetching data from your database, and so on.
+
+You can do all that by going to `config.py`:
+
+#### Step 1: Add ownCloud directory mapping
 
 ```python
-oc_dirs_mapping = dict()
-...
-...
-# Add a new line here
-oc_dirs_mapping[<report_name>] = "<ownCloud_target_path>"
+dirs = {
+    ...
+    "OC_MAPPED_DIRS": {
+        ...
+        # Add new mapping below
+        "<DIR_MAPPER_NAME>": Path(r"<path_to_report_dir>"), # Add this line here, together with the existing mappings
 ```
 
-#### Sample:
+##### Sample:
 
 ```python
-oc_dirs_mapping["balances"] = "Reports\\Balances\\"
+"BALANCES": Path(r"DataCenter\Balances")
 ```
 
-### Step 2: Create the script (SQL) file you will be using to extract the data needed for your new report, and save it inside the `scripts` folder
+#### Step 2: Create the required sql script that will generate the report for your new directory mapping
 
 #### Sample SQL script:
 
 ```sql
-SELECT * FROM dbo.Balances
+SELECT
+    *
+FROM
+    dbo.Balances
 ```
 
-> **Note:** You can pass parameter to a script by placing a `= ?` placeholder, instead of the actual value.
+Now, save it to folder `scripts\` and name it as `balances.sql`
 
-Now save your script to folder `scripts` and name it `balances.sql`
+> **Note:** Your mapper name and the name of the script file must be of the same name (just like what we did in previous examples). That is because each time you add a new directory mapping, the program will look for any file (inside `scripts\` folder) that matches the name of the mapping you've just created. Failing to do so will cause the program to stop/terminate.
 
-> **Note:** The name (key) of the mapping and the name of the script file should always be the same (just like what we did from the above examples). And that is because each time you add a new mapping, the program will look for any file (inside `scripts` folder) that matches the name of the mapping you created. Failing to do so will cause the program to stop/terminate.
+### Running tests
+
+Running test cases are important as it will ensure you that the program would work as intended.
+
+You can run tests by running the ff. code against your command line interface:
+
+```cmd
+> python tests\tests.py
+```
+
+### Limitations
