@@ -21,16 +21,17 @@ dirs = {
         "INVENTORY_ASOF": Path(r"Inventory"),
         "INVENTORY_MONTHLY": Path(r"Inventory\Monthly Invty"),
         # Add new mapping below
+        "ARCC": Path(r"Accounting\ARCC"),
     },
     "SCRIPTS_DIR": Path(r"scripts"),
 }
 
 # Database configuration
 database = {
-    "DRIVER": "ODBC Driver 17 for SQL Server",
-    "SERVER": "172.16.0.109",
-    "DATABASE": "PRD",
-    "UID": "dba",
-    "PWD": "misdbadmin01",
+    "DRIVER": "your-driver-version",
+    "SERVER": "your-server-name",
+    "DATABASE": "your-database-name",
+    "UID": "your-database-username",
+    "PWD": "your-database-password",
     "TrustCertificate": "Yes"
 }
