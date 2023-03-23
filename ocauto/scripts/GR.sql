@@ -81,6 +81,6 @@ WHERE
 	AND prd.EKPO.WEPOS = 'X' -- Goods Receipt Indicator
 	AND (NOT prd.EKPO.LOEKZ = 'L' -- Deletion Indicator
 		OR prd.EKPO.LOEKZ = '')
-	AND LEFT(EKBE.BUDAT, 6) = ? = ? -- Indicates that the 
+	AND LEFT(EKBE.BUDAT, 6) = ? -- Indicates that the 
 	AND prd.EKPO.RETPO <> 'X'
 	AND LEFT(prd.EKPO.EBELN, 2) NOT IN ('79', '55', '45')

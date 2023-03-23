@@ -1,20 +1,21 @@
 import sys
 import os
 import unittest
+from pathlib import Path
 
 sys.path.append(r"C:\Users\john.delmundo\Desktop\PythonAutomations\ocauto")
 
 from main import _get_year_and_month_before
 from main import _read_file
 from main import _row_to_list
+from main import create_dirs_based_on_config
+from main import _normalize_path
+
 import pyodbc
 
 class TestAppFunctions(unittest.TestCase):
 
     _test_file = "test_file.txt"
-    _test_dir_conf = {
-        
-    }
     _test_db_conn = pyodbc.connect(
         "DRIVER=%(driver)s; SERVER=%(server)s; DATABASE=%(db)s; UID=%(uid)s; PWD=%(pwd)s;" % (
             {
@@ -50,6 +51,12 @@ class TestAppFunctions(unittest.TestCase):
             include_headers=True), 
             [["Col1", "Col2", "Col3"], [1, 2, 3]]
         )
+
+    def test_create_dirs_based_on_config_func(self):
+        pass
+
+    def test_normalize_path_func(self):
+        self.assertEqual(_normalize_path("TestDir"), "TestDir\\")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
