@@ -35,7 +35,7 @@ All this in just a single run of a program.
 
 ### Setting up your program
 
-#### Clone the repository <small> (You can skip this part if you already have a copy of this to your local system) </small>
+#### Clone the repository <small> (You can skip this part if you already have a copy of this in your local system) </small>
 
 ```bash
 > cd <to your preferred target location>
