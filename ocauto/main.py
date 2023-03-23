@@ -84,7 +84,7 @@ def get_data_from_sql(script: str, param: str = None) -> pyodbc.Cursor:
     # Builds a pyodbc connection object
     logger.info("Connecting to '{database}', under instance name '{servername}'..."
         .format(database="PRD",
-            servername="172.16.0.109"
+            servername=database.get("SERVER")
         )
     )
     conn = pyodbc.connect(
